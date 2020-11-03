@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        .h100 {
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row justify-content-center align-items-center h100">
+            <div class="col-sm-6">
+                <input type="file" id="fileUpload" />
+                <input type="button" value="Upload" onclick="return Upload()" />
+            </div>
+            <div class="col-sm-6">
+                <table class="table table-bordered" id="table">
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/bootstrap.bundle.js"></script>
+</body>
+<script type="text/javascript">
+
+
+    function Upload() {
+        var fileUpload = document.getElementById("fileUpload");
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+        if (fileUpload == null){
+            alert("Please select a Image file.");
+        }
+        if (!allowedExtensions.exec(fileUpload)) {
+            if (typeof (fileUpload.files) != "undefined") {
+                var reader = new FileReader();
+                reader.readAsDataURL(fileUpload.files[0]);
+                reader.onload = function (e) {
+                    var image = new Image();
+                    image.src = e.target.result;
+                    image.onload = function () {
+                        var height = this.height;
+                        var width = this.width;
+                        if (height > 600 || width > 600) {
+                            alert("Height and Width must not exceed 600px.");
+                            return false;
+                        }
+                        alert("Success fully uploaded");
+                        return true;
+                    };
+
+                }
+            } else {
+                alert("Support only jpg and png");
+                return false;
+            }
+        } else {
+            alert("Please select a valid Image file.");
+            return false;
+        }
+    }
+
+
+    function empData() {
+        fetch('http://dummy.restapiexample.com/api/v1/employees')
+            .then(result => result.json())
+            .then(json => show(json.data))
+    }
+
+    function show(employees) {
+        let table = document.getElementById('table');
+        for (let i = 0; i < 5; i++) {
+            let obj = employees[i];
+            console.log(obj);
+            let row = document.createElement('tr');
+
+            let id = document.createElement('td');
+            let name = document.createElement('td');
+            let salary = document.createElement('td');
+
+            row.appendChild(id)
+            row.appendChild(name)
+            row.appendChild(salary)
+            table.appendChild(row);
+
+            id.innerHTML=obj.id;
+            name.innerHTML=obj.employee_name;
+            salary.innerHTML=obj.employee_salary;
+        }
+    }
+    empData()
+</script>
+
+</html>
